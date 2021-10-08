@@ -1,16 +1,39 @@
 include "../../circomlib/circuits/poseidon.circom"
 
-template Hasher(n) {
-  signal private input xs[n];
+
+// TODO:
+// - take input signal that describes the merkle path (0=left, 1=right)
+// - take inputs that describe the other branchs of the merkle tree
+// - check a baby jubjub keypair
+
+
+template IteratedHasher(numInputs, levels) {
+  signal private input xs[numInputs];
   signal output out;
 
-  component p = Poseidon(n);
+  // array of hash components
+  component poseidons[levels];
 
-  // TODO: replace with a `for` loop
-  p.inputs[0] <== xs[0]
-  p.inputs[1] <== xs[1]
+  // create all the circuit components
+  for (var i = 0; i < levels; i++) {
+    poseidons[i] = Poseidon(numInputs);
+  }
 
-  out <== p.out
+  // hook in input signals
+  poseidons[0].inputs[0] <== xs[0]
+  poseidons[0].inputs[1] <== xs[1]
+
+  // hook intermediary hashes together
+  for (var i = 1; i < levels; i++) {
+    poseidons[i].inputs[0] <== poseidons[i-1].out
+    poseidons[i].inputs[1] <== 0
+  }
+
+  out <== poseidons[levels-1].out
 }
 
-component main = Hasher(2);
+// poseidon was designed with two 32-byte inputs in mind,
+// in order to allow for merkle trees with a branching factor of 2
+
+// simulating a merkle tree with 32 levels to allow for ~ all humans
+component main = IteratedHasher(2, 32);
