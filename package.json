@@ -1,0 +1,15 @@
+{
+  "name": "pop-zkp",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Ted Suzman",
+  "license": "UNLICENSED",
+  "dependencies": {
+    "circom": "0.5.45",
+    "snarkjs": "0.4.7"
+  }
+}
