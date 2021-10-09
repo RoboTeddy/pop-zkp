@@ -1,25 +1,13 @@
 <!doctype html>
 <html>
-<head>
-  <title>Snarkjs client example</title>
-</head>
 <body>
-
-  <h1>Snarkjs</h1>
-  <button id="bGenProof"> Create proof </button>
-
-  <pre class="proof"> Proof: <code id="proof"></code></pre>
-
-  <pre class="proof"> Result: <code id="result"></code></pre>
-
-  <pre class="proof"> Time taken: <code id="time"></code></pre>
-
-  <script src="snarkjs.min.js">   </script>
-
-
-  <script>
-
-
+<h1>Snarkjs</h1>
+<button id="bGenProof"> Create proof </button>
+<pre class="proof"> Proof: <code id="proof"></code></pre>
+<pre class="proof"> Result: <code id="result"></code></pre>
+<pre class="proof"> Time taken: <code id="time"></code></pre>
+<script src="snarkjs.min.js"></script>
+<script>
 
 const proofCompnent = document.getElementById('proof');
 const resultComponent = document.getElementById('result');
@@ -30,9 +18,12 @@ bGenProof.addEventListener("click", calculateProof);
 
 async function calculateProof() {
 
+    const levels = 32
+
     const input = {
       "preimage": 123456,
-      "digests": [...Array(3).keys()],
+      "digests": [...Array(levels).keys()],
+      packedDirections: parseInt("01111001000111000010000111000010", 2),
       "privateKey": "3876493977147089964395646989418653640709890493868463039177063670701706079087",
       "pubKeyAx": "7544364404313686108640297486043592597084907953513982229886192880342666171487",
       "pubKeyAy": "2721089742146723067451923493488918617350881493409568860627491866568993834336"
@@ -47,7 +38,7 @@ async function calculateProof() {
     const stop = Date.now();
 
     proofCompnent.innerHTML = JSON.stringify(proof, null, 1);
-    time.innerHTML = stop-start + "ms"
+    time.innerHTML = stop - start + "ms"
 
     const vkey = await fetch("verification_key.json").then( function(res) {
         return res.json();
